@@ -6,6 +6,7 @@ import sys
 if __name__ == "__main__":
     word_list=sys.argv[1:]
     import requests
+    import xml.etree.ElementTree as ET
     url_base='http://dict-co.iciba.com/api/dictionary.php?key=628A9B23F5595B6F44E4DBEB870CEF0B&w='
 
     for i in word_list:
@@ -23,6 +24,15 @@ if __name__ == "__main__":
         #### >>> print u'\xe4\xb8\xad\xe6\x96\x87'
         #### ä¸­æ
 
-        #### So in order to print things out, our first step is to remove the 'u'. That is tell python the content is plain text
+        #### So in order to print things out(or send to ET to parse), our first step is to remove the 'u'. That is tell python the content is plain text
         text_codec=response.encoding
-        print response.text.encode(response.encoding)
+        #print response.text.encode(response.encoding)
+        root=ET.fromstring(response.text.encode(response.encoding))
+        sent_num=1
+        for child in root:
+            if(child.tag!='sent'):
+                print child.tag, child.text
+            else:
+                print str(sent_num)+'. '+child[0].text[1:-1]
+                print "  "+child[1].text[1:]
+                sent_num+=1
