@@ -28,11 +28,29 @@ if __name__ == "__main__":
         text_codec=response.encoding
         #print response.text.encode(response.encoding)
         root=ET.fromstring(response.text.encode(response.encoding))
+        ps_num=1
+        pron_link=[]
+        #pos_num=1
         sent_num=1
+        print("")
         for child in root:
-            if(child.tag!='sent'):
-                print child.tag, child.text
-            else:
+            if(child.tag=='key' and child.text):
+                print(child.text+"  "),
+            elif(child.tag=='ps' and child.text):
+                if(ps_num==1):
+                    print(u"英[ "+child.text+" ]  "),
+                elif(ps_num==2):
+                    print(u"美[ "+child.text+" ]  \n")
+                ps_num+=1
+            elif(child.tag=='pron' and child.text):
+                pron_link.append(child.text)
+            elif(child.tag=='pos' and child.text):
+                print ('- '+child.text+' '),
+            elif(child.tag=='acceptation' and child.text):
+                print child.text
+            elif(child.tag=='sent'):
                 print str(sent_num)+'. '+child[0].text[1:-1]
                 print "  "+child[1].text[1:]
                 sent_num+=1
+            # else:
+            #     print child.tag, child.text
