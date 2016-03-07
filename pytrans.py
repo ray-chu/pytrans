@@ -3,6 +3,19 @@
 
 import sys
 
+class color:
+   PURPLE = '\033[95m'
+   GRAY = '\033[30m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
 if __name__ == "__main__":
     word_list=sys.argv[1:]
     import requests
@@ -30,27 +43,35 @@ if __name__ == "__main__":
         root=ET.fromstring(response.text.encode(response.encoding))
         ps_num=1
         pron_link=[]
-        #pos_num=1
+        pos_num=1
+        acceptation_num=1
         sent_num=1
+        sent_start=False
         print("")
         for child in root:
             if(child.tag=='key' and child.text):
-                print(child.text+"  "),
+                print(child.text)
             elif(child.tag=='ps' and child.text):
                 if(ps_num==1):
-                    print(u"英[ "+child.text+" ]  "),
+                    print(color.RED+u"英[ "+child.text+" ]  "+color.END),
                 elif(ps_num==2):
-                    print(u"美[ "+child.text+" ]  \n")
+                    print(color.RED+u"美[ "+child.text+" ]  \n"+color.END)
                 ps_num+=1
             elif(child.tag=='pron' and child.text):
                 pron_link.append(child.text)
             elif(child.tag=='pos' and child.text):
-                print ('- '+child.text+' '),
+                print ('- '+color.GREEN+child.text+' '+color.END),
+                pos_num+=1
             elif(child.tag=='acceptation' and child.text):
-                print child.text
+                if(pos_num>1):
+                    print color.GREEN+child.text[:-1]+color.END
+                acceptation_num+=1
             elif(child.tag=='sent'):
-                print str(sent_num)+'. '+child[0].text[1:-1]
-                print "  "+child[1].text[1:]
+                if(sent_start==False):
+                    print ""
+                    sent_start=True
+                print color.PURPLE+str(sent_num)+'. '+child[0].text[1:-1]+color.END
+                print color.CYAN+child[1].text[1:]+color.END
                 sent_num+=1
             # else:
             #     print child.tag, child.text
