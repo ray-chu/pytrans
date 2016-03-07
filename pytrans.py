@@ -52,7 +52,7 @@ class iciba:
       print("")
       for child in root:
          if(child.tag=='key' and child.text):
-            print(child.text+"    "+color.GREY+"Source: "+self.source+color.END)
+            print(color.BOLD+child.text+color.END+"    "+color.GREY+"Source: "+self.source+color.END)
          elif(child.tag=='ps' and child.text):
             if(ps_num==1):
                print(color.RED+u"英[ "+child.text+" ]  "+color.END),
@@ -89,6 +89,7 @@ class youdao:
       url=self.url_base+word
       response=requests.get(url)
       text_codec=response.encoding
+      #print response.text.encode(response.encoding)
       root=ET.fromstring(response.text.encode(response.encoding))
       ### tags needs to be processed
       ### tags=['errorCode','basic','translation','web']
@@ -107,7 +108,7 @@ class youdao:
       ### query key
       query_key=root.find('query')
       if(query_key.text):
-         print (query_key.text+"  "),
+         print (color.BOLD+query_key.text+color.END+"    "+color.GREY+"Source: "+self.source+color.END)
       else:
          return
       ### basic dictionary
@@ -118,7 +119,7 @@ class youdao:
             print(color.RED+u"英[ "+uk_phonetic.text+" ]  "+color.END),
          us_phonetic=basic.find('us-phonetic')
          if(us_phonetic is not None):
-            print(color.RED+u"美[ "+us_phonetic.text+" ]      "+color.END+color.GREY+"Source: "+self.source+color.END+"\n")
+            print(color.RED+u"美[ "+us_phonetic.text+" ]"+"\n")
          explains=basic.findall('explains')      
          if(explains is not None):
             for expl in explains:
@@ -152,9 +153,8 @@ class youdao:
                   if(exs is not None):
                      for ex in exs:
                         print color.CYAN+ex.text+color.END
-               
-                  
-#      print response.text.encode(response.encoding)
+
+                                       
             
 if __name__ == "__main__":
     word_list=sys.argv[1:]
