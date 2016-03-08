@@ -4,6 +4,9 @@
 import sys
 import requests
 import xml.etree.ElementTree as ET
+import curses
+import terminalsize
+#stdscr = curses.initscr()
 
 class color:
    PURPLE = '\033[95m'
@@ -85,7 +88,9 @@ class youdao:
       self.url_base="http://fanyi.youdao.com/openapi.do?keyfrom=virginia&key=1553878309&type=data&doctype=xml&version=1.1&q="
       self.source="fanyi.youdao.com"
    def query(self,word):
-      print ""
+      width, height = terminalsize.get_terminal_size()
+      dividing_line="-"*width+'\n'
+      print dividing_line
       url=self.url_base+word
       response=requests.get(url)
       text_codec=response.encoding
@@ -119,7 +124,8 @@ class youdao:
             print(color.RED+u"英[ "+uk_phonetic.text+" ]  "+color.END),
          us_phonetic=basic.find('us-phonetic')
          if(us_phonetic is not None):
-            print(color.RED+u"美[ "+us_phonetic.text+" ]"+"\n")
+            print(color.RED+u"美[ "+us_phonetic.text+" ]")
+         print ""
          explains=basic.findall('explains')      
          if(explains is not None):
             for expl in explains:
@@ -146,13 +152,14 @@ class youdao:
             for expl in explains:
                key=expl.find('key')
                if(key is not None):
-                  print "[ "+key.text+" ]"
+                  print (key.text+" - "),
                value=expl.find('value')
                if(value is not None):
                   exs=value.findall('ex')
                   if(exs is not None):
                      for ex in exs:
-                        print color.CYAN+ex.text+color.END
+                        print (color.CYAN+ex.text+color.END),
+               print ""
 
                                        
             
